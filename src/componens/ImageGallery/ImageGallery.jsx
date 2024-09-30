@@ -1,4 +1,5 @@
 
+import css from "./"
 
 
 
@@ -12,7 +13,7 @@ export default function ImageGallery({ img }) {
         {img.map((e, index) => (
           <li key={index}>
             <div>
-              <img src={e.url} alt={e.alt} />
+               <img src={e.urls.small} alt={e.alt_description} />
             </div>
           </li>
         ))}
