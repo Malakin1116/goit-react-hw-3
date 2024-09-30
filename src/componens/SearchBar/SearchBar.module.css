@@ -1,0 +1,24 @@
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 10px;
+    text-align: center; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    background-color: rgb(85, 0, 0);
+  }
+  
+  form {
+    display: flex;
+    gap: 20px; 
+    justify-content: center;
+  }
+  
+  button {
+    margin-left: 10px;
+  }
+  
