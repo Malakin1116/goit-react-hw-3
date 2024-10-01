@@ -4,41 +4,41 @@ import SearchBar from "./SearchBar/SearchBar";
 import axios from "axios";
 import ImageGallery from "./ImageGallery/ImageGallery";
 
+import css from "./App.module.css"
 
+const fetchUser = async (values) => {
+    const accessKey = 'x_3565VSV08wibTFnqabIFYwtMANC8sqPdlKN0UNqj8';
+
+    const response = await axios.get(
+        'https://api.unsplash.com/search/photos', {
+            headers: {
+                Authorization: `Client-ID ${accessKey}`
+            },
+            params: {
+                query: values.search,
+                count: 10, 
+            }
+        }
+    );
+
+    return response.data.results
+}
 
 export default function App() {
     const [photos, setPhotos] = useState([]); 
     
     const handleSubmit = async (values, actions) => {
         console.log("Form data submitted:", values);
-
-        const accessKey = 'x_3565VSV08wibTFnqabIFYwtMANC8sqPdlKN0UNqj8';
-
-        try {
-            const response = await axios.get(
-                'https://api.unsplash.com/photos/random', {
-                    headers: {
-                        Authorization: `Client-ID ${accessKey}`
-                    },
-                    params: {
-                        count: 10, 
-                    }
-                }
-            );
-            setPhotos(response.data); 
-        } catch (error) {
-            console.error("Ошибка при запросе к API Unsplash:", error);
-        }
-         finally {
-            actions.setSubmitting(false); // Заканчиваем процесс отправки (например, убираем индикатор загрузки)
-        }
+        const fetchedUser = await fetchUser(values);
+        setPhotos(fetchedUser)
+        actions.reserForm();
     };
 
     return (
-        <div>
+        <div className={css.div_for_all}>
             <SearchBar onSubmit={handleSubmit}/>
             <ImageGallery img={photos}/>
-        </div>
+        </div> 
         
     );
 }
