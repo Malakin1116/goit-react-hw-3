@@ -4,7 +4,7 @@ export default function LoadMoreBtn () {
     
     return (
         <button className={css.button}>
-            Click
+            Load More
         </button>
     )
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const fetchUser = async (values) => {
+export const fetchUser = async (searchTerm) => {
     const accessKey = 'x_3565VSV08wibTFnqabIFYwtMANC8sqPdlKN0UNqj8';
 
     const response = await axios.get(
@@ -9,7 +9,7 @@ export const fetchUser = async (values) => {
                 Authorization: `Client-ID ${accessKey}`
             },
             params: {
-                query: values.search,
+                query: searchTerm,
                 count: 10, 
             }
         }

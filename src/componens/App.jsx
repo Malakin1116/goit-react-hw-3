@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar/SearchBar";
 import {fetchUser} from "../api"
 import ImageGallery from "./ImageGallery/ImageGallery";
@@ -9,27 +9,39 @@ import { Vortex } from 'react-loader-spinner'
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn"
 
+
 export default function App() {
+    const [searchTerm, setSearchTerm] = useState('');
     const [photos, setPhotos] = useState([]); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    
-    const handleSubmit = async (values, actions) => {
-        try {
-            setLoading(true);
-        setPhotos([]);
-        const fetchedUser = await fetchUser(values);
-        setPhotos(fetchedUser);
-        setLoading(false);
-        actions.resetForm();
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
+     useEffect(() => {
+        if (searchTerm) {
+            const fetchData = async () => {
+                try {
+                    setLoading(true);
+                    setPhotos([]);
+                    setError(false);
+                    const fetchedUser = await fetchUser(searchTerm); 
+                    setPhotos(fetchedUser);
+                } 
+                catch (err) {
+                    setError(true);
+                    console.log(err);
+                }
+                finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchData();
+        }
+    }, [searchTerm]);   
+    
     return (
         <div className={css.div_for_all}>
-            <SearchBar onSubmit={handleSubmit}/>
+            <SearchBar onSearch={setSearchTerm}/>
             <ImageGallery img={photos}/>
             {loading &&
              <div className={css.loadingWrapper}>
@@ -42,10 +54,9 @@ export default function App() {
                 />
              </div>
             }
-            {error && 
-            <ErrorMessage/>
-            }
-            <LoadMoreBtn/>
+
+            {error && <ErrorMessage/>}
+            {photos.length > 0 && <LoadMoreBtn/>}
         </div> 
         
     );
@@ -60,3 +71,22 @@ export default function App() {
 //             "thumb": "https://images.unsplash.com/photo-1724776912349-918781add338?crop=entropy\u0026cs=tinysrgb\u0026fit=max\u0026fm=jpg\u0026ixid=M3w2NTgxNjd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjc2ODA1NzJ8\u0026ixlib=rb-4.0.3\u0026q=80\u0026w=200",
 //             "small_s3": "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1724776912349-918781add338"
 //         },
+
+
+    // const handleSubmit = async (values) => {
+    //     try {
+    //         setLoading(true);
+    //         setPhotos([]);
+    //         setError(false);
+    //         const fetchedUser = await fetchUser(values);
+
+    //         setPhotos(fetchedUser);
+    //     } 
+    //     catch (err) {
+    //        setError(true);
+    //        console.log(err);
+    //     }
+    //     finally {
+    //         setLoading(false);
+    //     }
+    // };

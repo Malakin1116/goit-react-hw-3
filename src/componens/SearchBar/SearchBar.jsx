@@ -1,21 +1,20 @@
 import { Formik, Form, Field } from 'formik';
 import { toast, Toaster } from 'react-hot-toast';
+import css from "./SearchBar.module.css";
 
-import css from "./SearchBar.module.css"
-
-export default function SearchBar({ onSubmit }) {
+export default function SearchBar({ onSearch }) {
   return (
     <header className={css.header}>
       <Toaster position="top-center" />
       <Formik
         initialValues={{ search: '' }}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting }) => {  
           if (values.search.trim() === '') {
             toast.error('Please enter text to search for images.');
             setSubmitting(false);
             return;
           }
-          onSubmit(values);
+          onSearch(values.search); 
           setSubmitting(false);
           toast.success('Form submitted successfully!');
         }}
