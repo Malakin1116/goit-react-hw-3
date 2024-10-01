@@ -1,43 +1,51 @@
 import { useState } from "react";
 import SearchBar from "./SearchBar/SearchBar";
-
-import axios from "axios";
+import {fetchUser} from "../api"
 import ImageGallery from "./ImageGallery/ImageGallery";
-
 import css from "./App.module.css"
 
-const fetchUser = async (values) => {
-    const accessKey = 'x_3565VSV08wibTFnqabIFYwtMANC8sqPdlKN0UNqj8';
 
-    const response = await axios.get(
-        'https://api.unsplash.com/search/photos', {
-            headers: {
-                Authorization: `Client-ID ${accessKey}`
-            },
-            params: {
-                query: values.search,
-                count: 10, 
-            }
-        }
-    );
-
-    return response.data.results
-}
+import { Vortex } from 'react-loader-spinner'
+import ErrorMessage from "./ErrorMessage/ErrorMessage";
+import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn"
 
 export default function App() {
     const [photos, setPhotos] = useState([]); 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
     
     const handleSubmit = async (values, actions) => {
-        console.log("Form data submitted:", values);
+        try {
+            setLoading(true);
+        setPhotos([]);
         const fetchedUser = await fetchUser(values);
-        setPhotos(fetchedUser)
-        actions.reserForm();
+        setPhotos(fetchedUser);
+        setLoading(false);
+        actions.resetForm();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
         <div className={css.div_for_all}>
             <SearchBar onSubmit={handleSubmit}/>
             <ImageGallery img={photos}/>
+            {loading &&
+             <div className={css.loadingWrapper}>
+                <Vortex
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="vortex-loading"
+                    colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+                />
+             </div>
+            }
+            {error && 
+            <ErrorMessage/>
+            }
+            <LoadMoreBtn/>
         </div> 
         
     );

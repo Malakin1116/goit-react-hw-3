@@ -1,0 +1,18 @@
+.errorWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 75px;
+    background-color: #ffe0e0; 
+    border-radius: 8px;
+    border: 1px solid #ff0000; 
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .errorMessage {
+    color: #ff0000; 
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
