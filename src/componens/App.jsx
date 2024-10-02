@@ -15,16 +15,20 @@ export default function App() {
     const [photos, setPhotos] = useState([]); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [page, setPage] = useState(1); 
 
-     useEffect(() => {
-        if (searchTerm) {
+    useEffect(() => { 
+        if (searchTerm === "") {
+            return;
+        }
+
             const fetchData = async () => {
                 try {
                     setLoading(true);
-                    setPhotos([]);
                     setError(false);
-                    const fetchedUser = await fetchUser(searchTerm); 
-                    setPhotos(fetchedUser);
+                    const fetchedUser = await fetchUser(searchTerm, page);
+
+                    setPhotos((prevPhotos) => [...prevPhotos, ...fetchedUser]);
                 } 
                 catch (err) {
                     setError(true);
@@ -34,14 +38,23 @@ export default function App() {
                     setLoading(false);
                 }
             };
-
             fetchData();
-        }
-    }, [searchTerm]);   
+        
+    }, [searchTerm, page]);
+      
+    const handleSearch = (newTopic) => {
+        setSearchTerm(newTopic);
+        setPage(1);
+        setPhotos([]);
+    }
+
+    const handleLoadMore = () => {
+        setPage(prevPage => prevPage + 1); 
+    };
     
     return (
         <div className={css.div_for_all}>
-            <SearchBar onSearch={setSearchTerm}/>
+            <SearchBar onSearch={handleSearch}/>
             <ImageGallery img={photos}/>
             {loading &&
              <div className={css.loadingWrapper}>
@@ -56,37 +69,10 @@ export default function App() {
             }
 
             {error && <ErrorMessage/>}
-            {photos.length > 0 && <LoadMoreBtn/>}
+            {photos.length > 0 && !loading && <LoadMoreBtn onClick={handleLoadMore}/>}
         </div> 
         
     );
 }
 
 
-// "urls": {
-//             "raw": "https://images.unsplash.com/photo-1724776912349-918781add338?ixid=M3w2NTgxNjd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjc2ODA1NzJ8\u0026ixlib=rb-4.0.3",
-//             "full": "https://images.unsplash.com/photo-1724776912349-918781add338?crop=entropy\u0026cs=srgb\u0026fm=jpg\u0026ixid=M3w2NTgxNjd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjc2ODA1NzJ8\u0026ixlib=rb-4.0.3\u0026q=85",
-//             "regular": "https://images.unsplash.com/photo-1724776912349-918781add338?crop=entropy\u0026cs=tinysrgb\u0026fit=max\u0026fm=jpg\u0026ixid=M3w2NTgxNjd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjc2ODA1NzJ8\u0026ixlib=rb-4.0.3\u0026q=80\u0026w=1080",
-//             "small": "https://images.unsplash.com/photo-1724776912349-918781add338?crop=entropy\u0026cs=tinysrgb\u0026fit=max\u0026fm=jpg\u0026ixid=M3w2NTgxNjd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjc2ODA1NzJ8\u0026ixlib=rb-4.0.3\u0026q=80\u0026w=400",
-//             "thumb": "https://images.unsplash.com/photo-1724776912349-918781add338?crop=entropy\u0026cs=tinysrgb\u0026fit=max\u0026fm=jpg\u0026ixid=M3w2NTgxNjd8MHwxfHJhbmRvbXx8fHx8fHx8fDE3Mjc2ODA1NzJ8\u0026ixlib=rb-4.0.3\u0026q=80\u0026w=200",
-//             "small_s3": "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1724776912349-918781add338"
-//         },
-
-
-    // const handleSubmit = async (values) => {
-    //     try {
-    //         setLoading(true);
-    //         setPhotos([]);
-    //         setError(false);
-    //         const fetchedUser = await fetchUser(values);
-
-    //         setPhotos(fetchedUser);
-    //     } 
-    //     catch (err) {
-    //        setError(true);
-    //        console.log(err);
-    //     }
-    //     finally {
-    //         setLoading(false);
-    //     }
-    // };

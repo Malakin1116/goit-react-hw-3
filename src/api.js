@@ -1,15 +1,18 @@
 import axios from "axios";
 
-export const fetchUser = async (searchTerm) => {
+axios.defaults.baseURL = "https://api.unsplash.com";
+
+export const fetchUser = async (searchTerm, page) => {
     const accessKey = 'x_3565VSV08wibTFnqabIFYwtMANC8sqPdlKN0UNqj8';
 
     const response = await axios.get(
-        'https://api.unsplash.com/search/photos', {
+        '/search/photos', {
             headers: {
                 Authorization: `Client-ID ${accessKey}`
             },
             params: {
                 query: searchTerm,
+                page,
                 count: 10, 
             }
         }
