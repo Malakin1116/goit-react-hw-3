@@ -17,6 +17,9 @@ export default function App() {
     const [error, setError] = useState(false);
     const [page, setPage] = useState(1); 
 
+    const [allPages, setAllPages] = useState(999);
+
+
     useEffect(() => { 
         if (searchTerm === "") {
             return;
@@ -26,9 +29,11 @@ export default function App() {
                 try {
                     setLoading(true);
                     setError(false);
-                    const fetchedUser = await fetchUser(searchTerm, page);
+                    const res = await fetchUser(searchTerm, page);
 
-                    setPhotos((prevPhotos) => [...prevPhotos, ...fetchedUser]);
+                    setPhotos((prevPhotos) => [...prevPhotos, ...res.articles]);
+
+                    setAllPages(res.totalPages)
                 } 
                 catch (err) {
                     setError(true);
@@ -68,8 +73,9 @@ export default function App() {
              </div>
             }
 
+            {page >= allPages && <p>End OF IMG</p>}
             {error && <ErrorMessage/>}
-            {photos.length > 0 && !loading && <LoadMoreBtn onClick={handleLoadMore}/>}
+            {photos.length > 0 && !loading && page < allPages &&(<LoadMoreBtn onClick={handleLoadMore}/>)}
         </div> 
         
     );

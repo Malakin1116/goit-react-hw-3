@@ -17,6 +17,9 @@ export const fetchUser = async (searchTerm, page) => {
             }
         }
     );
-
-    return response.data.results;
+    
+    return {
+        articles:  response.data.results,
+        totalPages: response.data.total_pages,
+    }
 }
